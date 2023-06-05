@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cg.movie.dao.MovieRepository;
-import com.cg.movie.dto.Movie;
+import com.cg.movie.dto.MovieDto;
+import com.cg.movie.entity.Movie;
 import com.cg.movie.exception.MovieException;
+import com.cg.movie.mapper.MovieMapper;
 import com.cg.movie.service.MovieService;
 import com.cg.movie.util.Constants;
 
@@ -18,22 +20,31 @@ public class MovieServiceImpl implements MovieService {
 
 	@Autowired
 	MovieRepository movieRepository;
-
+	@Autowired
+	MovieMapper movieMapper;
 	Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
 
 	@Override
-	public String addMovie(Movie movie) {
+	public MovieDto addMovie(MovieDto moviedto) {
 
 		logger.info("MovieService- addMovie Started");
 		
-		Movie result = movieRepository.save(movie);
-		logger.info("Movie Record Added Successfully: " + movie.toString());
-		if (result == null || result.getMovieId() == null) {
+		logger.info("MovieMapper dtoToEntity- Request Mapper Started");
+		Movie movie = movieMapper.dtoToModel(moviedto);
+		logger.info("MovieMapper dtoToEntity- Request Mapper Ended " +movie);
+		
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+		MovieDto resultDto = movieMapper.modelToDto(movieRepository.save(movie));
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " +resultDto);
+
+		if (resultDto == null || resultDto.getMovieId() == null) {
 			logger.error("Exception Occured");
 			throw new MovieException(Constants.FAILED);
 		}
+		logger.info(Constants.ADD + movie.toString());
+
 		logger.info("MovieService-addMovie Ended");
-		return Constants.ADD+result.getMovieId();
+		return resultDto;
 
 	}
 

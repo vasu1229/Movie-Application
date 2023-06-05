@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.cg.movie.dto.Movie;
+
+import com.cg.movie.dto.MovieDto;
+import com.cg.movie.entity.Movie;
 import com.cg.movie.exception.MovieException;
+import com.cg.movie.mapper.MovieMapper;
 import com.cg.movie.service.MovieService;
 import jakarta.validation.Valid;
 
@@ -26,18 +29,16 @@ public class MovieController {
 
 	@Autowired
 	MovieService movieService;
-	
-//	@Autowired
-//	MovieRepository movieRepository;
 
 	Logger logger = LoggerFactory.getLogger(MovieController.class);
 	long elapsedTime;
 
 	@PostMapping("/add")
-	public ResponseEntity<String> addMovie(@RequestBody @Valid Movie movie) throws MovieException {
+	public ResponseEntity<MovieDto> addMovie(@RequestBody @Valid MovieDto moviedto) throws MovieException {
 		long startTime = System.currentTimeMillis();
 		logger.info("MovieController- addMovie Started ");
-		String result = movieService.addMovie(movie);
+	
+		MovieDto result = movieService.addMovie(moviedto);
 		elapsedTime = System.currentTimeMillis() - startTime;
 		logger.info("MovieController- addMovie Ended");
 		logger.info("Time Taken: " + elapsedTime + " ms");
