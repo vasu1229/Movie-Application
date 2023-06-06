@@ -8,11 +8,11 @@ import com.cg.movie.entity.Movie;
 public interface MovieService {
 	
 	public MovieDto addMovie(MovieDto moviedto);
-	public Movie getMovieByName(String movieName);
-	public Movie getMovieById(Integer movieId);
-	public List<Movie> getAllMovies();
-	public List<Movie> getMovieByDirectorName(String directorName);
+	public MovieDto getMovieByName(String movieName);
+	public MovieDto getMovieById(Integer movieId);
+	public List<MovieDto> getAllMovies();
+	public List<MovieDto> getMovieByDirectorName(String directorName);
 	public String deleteMovieById(Integer movieId);
-	public String updateMovie(Movie movie);
+	public MovieDto updateMovie(MovieDto moviedto);
 
 }

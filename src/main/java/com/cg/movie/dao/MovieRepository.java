@@ -17,4 +17,5 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
 	public List<Movie> findByDirectorName(String directorName);
 
+
 }

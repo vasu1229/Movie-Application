@@ -28,14 +28,14 @@ public class MovieServiceImpl implements MovieService {
 	public MovieDto addMovie(MovieDto moviedto) {
 
 		logger.info("MovieService- addMovie Started");
-		
+
 		logger.info("MovieMapper dtoToEntity- Request Mapper Started");
 		Movie movie = movieMapper.dtoToModel(moviedto);
-		logger.info("MovieMapper dtoToEntity- Request Mapper Ended " +movie);
-		
+		logger.info("MovieMapper dtoToEntity- Request Mapper Ended " + movie);
+
 		logger.info("MovieMapper EntityToDto- Response Mapper Started");
 		MovieDto resultDto = movieMapper.modelToDto(movieRepository.save(movie));
-		logger.info("MovieMapper EntityToDto- Response Mapper Ended " +resultDto);
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
 
 		if (resultDto == null || resultDto.getMovieId() == null) {
 			logger.error("Exception Occured");
@@ -49,81 +49,105 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Movie getMovieByName(String movieName) {
+	public MovieDto getMovieByName(String movieName) {
 		logger.info("Microservice- getMovieByName Started");
-		Movie result = movieRepository.findByMovieName(movieName);
-		logger.info("Movie record fetched successfully:" + result.toString());
-		if (result == null || result.getMovieId() == null) {
+
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+		MovieDto resultDto = movieMapper.modelToDto(movieRepository.findByMovieName(movieName));
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
+
+		logger.info("Movie record fetched successfully:" + resultDto.toString());
+		if (resultDto == null || resultDto.getMovieId() == null) {
 			logger.error("Excepiton occurs");
 			throw new MovieException(Constants.NOT_FOUND);
 		}
 		logger.info("Microservice- getMovieByName Ended");
-		return result;
+		return resultDto;
 	}
 
 	@Override
-	public Movie getMovieById(Integer movieId) {
+	public MovieDto getMovieById(Integer movieId) {
 		logger.info("Microservice- getMovieById Started");
-		Movie result = movieRepository.findById(movieId).get();
-		logger.info("Movie record fetched successfully:" + result.toString());
-		if (result == null || result.getMovieId() == null) {
+
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+		MovieDto resultDto = movieMapper.modelToDto(movieRepository.findById(movieId).get());
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
+
+		logger.info("Movie record fetched successfully:" + resultDto.toString());
+		if (resultDto == null || resultDto.getMovieId() == null) {
 			logger.error("Exception occurs");
 			throw new MovieException(Constants.NOT_FOUND);
 		}
 		logger.info("Microservice- getMovieById Ended");
-		return result;
+		return resultDto;
 	}
 
 	@Override
-	public List<Movie> getAllMovies() {
+	public List<MovieDto> getAllMovies() {
 		logger.info("Microservice- getAllMovie Started");
+
 		List<Movie> result = movieRepository.findAll();
 		logger.info("Movie Records Fetched Successfully: " + result.toString());
-		if (result.isEmpty() || result == null) {
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+
+		List<MovieDto> resultDto = movieMapper.listModelToDto(result);
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
+
+		if (resultDto.isEmpty() || resultDto == null) {
 			logger.error("Exception Occured");
 			throw new MovieException(Constants.NOT_FOUND);
 		}
 		logger.info("MovieService-getAllMovies Ended");
-		return result;
+		return resultDto;
 	}
 
 	@Override
-	public List<Movie> getMovieByDirectorName(String directorName) {
+	public List<MovieDto> getMovieByDirectorName(String directorName) {
 		logger.info("Microservice- getMovieByDirector Started");
 		List<Movie> result = movieRepository.findByDirectorName(directorName);
 		logger.info("Movie record fetched successfully:" + result.toString());
-		if (result.isEmpty() || result == null) {
+
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+
+		List<MovieDto> resultDto = movieMapper.listModelToDto(result);
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
+
+		if (resultDto.isEmpty() || resultDto == null) {
 			logger.error("Exception Occured");
 			throw new MovieException(Constants.NOT_FOUND);
 		}
 		logger.info("MovieService-getMovieByDirector Ended");
-		return result;
+		return resultDto;
 	}
 
-		
 	@Override
-	public String updateMovie(Movie movie) {
+	public MovieDto updateMovie(MovieDto moviedto) {
 		logger.info("Microservice- updateMovie Started");
 
-		Movie movieById = getMovieById(movie.getMovieId());
+		MovieDto movieById = getMovieById(moviedto.getMovieId());
 
 		if (movieById == null || movieById.getMovieId() == null) {
 			logger.error("Exception occurs");
 			throw new MovieException(Constants.NOT_FOUND);
 		}
-		Movie result = movieRepository.save(movie);
 
-		logger.info("Movie Updated Successfully:" + result.toString());
+		logger.info("MovieMapper dtoToEntity- Request Mapper Started");
+		Movie movie = movieMapper.dtoToModel(moviedto);
+		logger.info("MovieMapper dtoToEntity- Request Mapper Ended " + movie);
+
+		logger.info("MovieMapper EntityToDto- Response Mapper Started");
+		MovieDto resultDto = movieMapper.modelToDto(movieRepository.save(movie));
+		logger.info("MovieMapper EntityToDto- Response Mapper Ended " + resultDto);
+
+		logger.info("Movie Updated Successfully:" + resultDto.toString());
 		logger.info("Microservice- updateMovie Ended");
-		return Constants.UPDATE+result.getMovieId();
+		return resultDto;
 	}
-
-
 
 	@Override
 	public String deleteMovieById(Integer movieId) {
 		logger.info("Microservice- deleteMovieById Started");
-		Movie movieById = getMovieById(movieId);
+		MovieDto movieById = getMovieById(movieId);
 		if (movieById == null || movieById.getMovieId() == null) {
 			logger.error("Exception Occured");
 			throw new MovieException(Constants.NOT_FOUND);
